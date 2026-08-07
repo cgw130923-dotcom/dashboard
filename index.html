@@ -161,11 +161,11 @@ function clock(){
 
 let now=new Date();
 
-document.getElementById("clock").innerHTML=
+document.getElementByIddocument.getElementById("clock").innerHTML =
 now.toLocaleTimeString("ko-KR");
 
 
-document.getElementById("date").innerHTML=
+document.getElementById("document").getElementById("date").innerHTML =
 now.toLocaleDateString("ko-KR",
 {
 year:"numeric",
@@ -193,7 +193,7 @@ fetch(
 
 .then(d=>{
 
-weather.innerHTML=
+document.getElementById("weather").innerHTML =
 "🌡️ 온도 Temperature : "+
 d.current.temperature_2m+"℃"+
 "<br>💧 습도 Humidity : "+
