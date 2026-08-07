@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gunwoo Dashboard V4</title>
+<title>Gunwoo Smart Dashboard</title>
 
 <style>
+
 body{
 margin:0;
 background:#050505;
@@ -22,43 +24,53 @@ padding:25px;
 }
 
 .container{
-padding:15px;
 display:grid;
 gap:15px;
+padding:15px;
 }
 
 .card{
 background:#151515;
 border-radius:25px;
-padding:20px;
-text-align:center;
+padding:22px;
+box-shadow:0 5px 20px #000;
 }
 
 .title{
-font-size:22px;
+font-size:24px;
+text-align:center;
 margin-bottom:15px;
 }
 
 .big{
 font-size:55px;
+text-align:center;
 font-weight:bold;
 }
 
 .info{
-font-size:20px;
+font-size:19px;
 line-height:1.8;
 }
 
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <header>
-🌍 Gunwoo Dashboard
+🌍 Gunwoo Smart Dashboard
 </header>
 
+
+
 <div class="container">
+
+
 
 <div class="card">
 <div class="title">🕒 현재 시간</div>
@@ -66,10 +78,12 @@ line-height:1.8;
 </div>
 
 
+
 <div class="card">
 <div class="title">📅 날짜</div>
 <div id="date" class="info"></div>
 </div>
+
 
 
 <div class="card">
@@ -80,52 +94,78 @@ line-height:1.8;
 </div>
 
 
+
 <div class="card">
-<div class="title">🌋 최근 지진</div>
+<div class="title">🌋 최근 지진 Earthquakes</div>
+
 <div id="quake" class="info">
 불러오는 중...
 </div>
+
 </div>
 
 
+
+
 <div class="card">
-<div class="title">💱 환율</div>
+<div class="title">💱 환율 Exchange</div>
+
 <div id="money" class="info">
 불러오는 중...
 </div>
+
 </div>
+
+
 
 
 <div class="card">
-<div class="title">📰 세계 뉴스</div>
-<div class="info">
-뉴스 연결 준비 중
+<div class="title">📰 세계 뉴스 World News</div>
+
+<div id="news" class="info">
+불러오는 중...
 </div>
+
 </div>
+
+
 
 
 <div class="card">
-<div class="title">⚾ 롯데 자이언츠</div>
-<div class="info">
-경기 정보 준비 중
+
+<div class="title">
+⚾ 롯데 자이언츠 LOTTE GIANTS
 </div>
+
+<div class="info">
+
+경기 정보 준비 중<br>
+Game information coming soon
+
 </div>
 
 </div>
+
+
+
+</div>
+
 
 
 <script>
 
+
 // 시간
 
-function time(){
+function clock(){
 
 let now=new Date();
 
-clock.innerHTML=
+document.getElementById("clock").innerHTML=
 now.toLocaleTimeString("ko-KR");
 
-date.innerHTML=
+
+document.getElementById("date").innerHTML=
 now.toLocaleDateString("ko-KR",
 {
 year:"numeric",
@@ -136,16 +176,17 @@ weekday:"long"
 
 }
 
-setInterval(time,1000);
-time();
+setInterval(clock,1000);
+
+clock();
 
 
 
 
-// 부산 날씨
+// 날씨
 
 fetch(
-"https://api.open-meteo.com/v1/forecast?latitude=35.1796&longitude=129.0756&current=temperature_2m,relative_humidity_2m,weather_code"
+"https://api.open-meteo.com/v1/forecast?latitude=35.1796&longitude=129.0756&current=temperature_2m,relative_humidity_2m"
 )
 
 .then(r=>r.json())
@@ -153,15 +194,18 @@ fetch(
 .then(d=>{
 
 weather.innerHTML=
-"🌡️ "+d.current.temperature_2m+"℃<br>"+
-"💧 습도 "+d.current.relative_humidity_2m+"%";
+"🌡️ 온도 Temperature : "+
+d.current.temperature_2m+"℃"+
+"<br>💧 습도 Humidity : "+
+d.current.relative_humidity_2m+"%";
 
 });
 
 
 
 
-// 지진
+
+// 지진 여러개
 
 fetch(
 "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
@@ -171,13 +215,30 @@ fetch(
 
 .then(d=>{
 
-let q=d.features[0];
 
-quake.innerHTML=
-"📍 "+q.properties.place+
-"<br>규모 "+q.properties.mag;
+let text="";
+
+
+for(let i=0;i<5;i++){
+
+let q=d.features[i];
+
+text+=
+"🌎 "+q.properties.place+
+"<br>"+
+"규모 Magnitude : "+
+q.properties.mag+
+"<br><br>";
+
+}
+
+
+quake.innerHTML=text;
+
 
 });
+
+
 
 
 
@@ -192,12 +253,56 @@ fetch(
 
 .then(d=>{
 
+
 money.innerHTML=
-"🇺🇸 1달러 ≈ "+
-d.rates.KRW+
-"원";
+"🇺🇸 1 USD ≈ "+
+Math.round(d.rates.KRW)+
+" KRW";
+
 
 });
+
+
+
+
+
+
+// 뉴스
+
+fetch(
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml"
+)
+
+.then(r=>r.json())
+
+.then(d=>{
+
+
+let text="";
+
+
+for(let i=0;i<5;i++){
+
+text+=
+"🌍 "+
+d.items[i].title+
+"<br><br>";
+
+}
+
+
+news.innerHTML=text;
+
+
+})
+
+.catch(()=>{
+
+news.innerHTML=
+"뉴스 연결 실패";
+
+});
+
 
 
 </script>
