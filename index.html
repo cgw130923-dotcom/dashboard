@@ -1,127 +1,175 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Gunwoo Dashboard</title>
 
 <style>
-body {
-    margin: 0;
-    background: #111827;
-    color: white;
-    font-family: Arial, sans-serif;
+
+body{
+margin:0;
+background:#0f172a;
+color:white;
+font-family:Arial,sans-serif;
 }
 
-header {
-    text-align: center;
-    padding: 20px;
-    font-size: 30px;
-    font-weight: bold;
+header{
+text-align:center;
+font-size:32px;
+font-weight:bold;
+padding:25px;
 }
 
-.container {
-    display: grid;
-    gap: 15px;
-    padding: 15px;
+
+.container{
+padding:15px;
+display:grid;
+gap:15px;
 }
 
-.card {
-    background: #1f2937;
-    border-radius: 20px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 5px 15px #0005;
+
+.card{
+background:#1e293b;
+border-radius:25px;
+padding:25px;
+text-align:center;
+box-shadow:0 5px 20px #0005;
 }
 
-.title {
-    font-size: 20px;
-    margin-bottom: 10px;
+
+.title{
+font-size:20px;
+margin-bottom:15px;
 }
 
-.big {
-    font-size: 45px;
-    font-weight: bold;
+
+.big{
+font-size:50px;
+font-weight:bold;
 }
 
-.text {
-    font-size: 18px;
+
+.info{
+font-size:22px;
+line-height:1.8;
 }
 
+
+.small{
+color:#cbd5e1;
+}
 
 </style>
+
 </head>
 
 
 <body>
+
 
 <header>
 🌍 Gunwoo Dashboard
 </header>
 
 
+
 <div class="container">
 
-<div class="card">
-<div class="title">🕒 현재 시간</div>
-<div id="clock" class="big"></div>
-</div>
-
 
 <div class="card">
-<div class="title">📅 오늘 날짜</div>
-<div id="date" class="text"></div>
+
+<div class="title">
+🕒 현재 시간
 </div>
 
+<div id="clock" class="big">
+</div>
 
-<div class="card">
-<div class="title">🌤️ 부산 날씨</div>
-<div class="text">
-<div class="text">
-🌡️ 28℃
-<br>
-☀️ 맑음
-<br>
-💧 습도 60%
 </div>
-</div>
-</div>
+
 
 
 <div class="card">
-<div class="title">📰 세계 뉴스</div>
-<div class="text">
-세계 주요 뉴스
-<br>
-(뉴스 기능 추가 예정)
+
+<div class="title">
+📅 날짜
 </div>
+
+<div id="date" class="info">
 </div>
+
+</div>
+
 
 
 <div class="card">
-<div class="title">🌋 지구 정보</div>
-<div class="text">
-지진 · 태풍 · 우주 정보
-<br>
-(업데이트 예정)
+
+<div class="title">
+🌤 부산 날씨
 </div>
+
+<div id="weather" class="info">
+
+날씨 불러오는 중...
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="title">
+📰 세계 뉴스
+</div>
+
+<div class="info">
+
+뉴스 기능 준비 중
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="title">
+🌎 지구 정보
+</div>
+
+<div class="info">
+
+지진 · 태풍 · 우주 정보 준비 중
+
+</div>
+
 </div>
 
 
 </div>
+
+
 
 
 <script>
 
-function update(){
 
-let now = new Date();
+// 시간
 
-document.getElementById("clock").innerHTML =
+function clock(){
+
+let now=new Date();
+
+document.getElementById("clock").innerHTML=
 now.toLocaleTimeString("ko-KR");
 
-document.getElementById("date").innerHTML =
+document.getElementById("date").innerHTML=
 now.toLocaleDateString("ko-KR",
 {
 year:"numeric",
@@ -132,8 +180,79 @@ weekday:"long"
 
 }
 
-setInterval(update,1000);
-update();
+
+setInterval(clock,1000);
+
+clock();
+
+
+
+
+
+// 부산 날씨
+
+function weather(){
+
+fetch(
+"https://api.open-meteo.com/v1/forecast?latitude=35.1796&longitude=129.0756&current=temperature_2m,relative_humidity_2m,weather_code"
+)
+
+.then(response=>response.json())
+
+.then(data=>{
+
+
+let temp=data.current.temperature_2m;
+
+let hum=data.current.relative_humidity_2m;
+
+let code=data.current.weather_code;
+
+
+let text="☀️ 맑음";
+
+
+if(code>=1 && code<=3)
+text="🌤 구름 조금";
+
+if(code>=45 && code<=48)
+text="🌫 안개";
+
+if(code>=51 && code<=67)
+text="🌧 비";
+
+if(code>=71 && code<=77)
+text="❄️ 눈";
+
+
+
+document.getElementById("weather").innerHTML=
+
+"🌡️ "+temp+"℃<br>"+
+text+
+"<br>💧 습도 "+hum+"%";
+
+
+})
+
+.catch(()=>{
+
+document.getElementById("weather").innerHTML=
+"날씨 연결 실패";
+
+});
+
+
+}
+
+
+weather();
+
+
+// 30분마다 갱신
+
+setInterval(weather,1800000);
+
 
 </script>
 
