@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gunwoo Dashboard</title>
+<title>Gunwoo Dashboard V11</title>
 
 <style>
-
 body{
 margin:0;
-background:#000000;
+background:#000;
 color:white;
 font-family:Arial,sans-serif;
 }
@@ -30,43 +28,38 @@ padding:15px;
 }
 
 .card{
-background:#111111;
+background:#111;
 border-radius:25px;
 padding:22px;
 }
 
 .title{
-font-size:23px;
+font-size:24px;
 text-align:center;
 margin-bottom:15px;
 }
 
 .big{
 font-size:55px;
-text-align:center;
 font-weight:bold;
+text-align:center;
 }
 
 .info{
 font-size:19px;
 line-height:1.8;
 }
-
 </style>
 
 </head>
 
-
 <body>
 
-
 <header>
-🌍 Gunwoo Dashboard
+🌍 Gunwoo Smart Dashboard
 </header>
 
-
 <div class="container">
-
 
 <div class="card">
 <div class="title">🕒 현재 시간</div>
@@ -81,7 +74,7 @@ line-height:1.8;
 
 
 <div class="card">
-<div class="title">🌤 부산 날씨</div>
+<div class="title">🌤 부산 동래구 온천동 날씨</div>
 <div id="weather" class="info">
 업데이트 중...
 </div>
@@ -89,7 +82,7 @@ line-height:1.8;
 
 
 <div class="card">
-<div class="title">🌋 최근 지진</div>
+<div class="title">🌋 최근 지진 Earthquake</div>
 <div id="quake" class="info">
 업데이트 중...
 </div>
@@ -97,7 +90,7 @@ line-height:1.8;
 
 
 <div class="card">
-<div class="title">💱 환율</div>
+<div class="title">💱 환율 Exchange</div>
 <div id="money" class="info">
 업데이트 중...
 </div>
@@ -105,19 +98,16 @@ line-height:1.8;
 
 
 <div class="card">
-<div class="title">📰 한국 뉴스</div>
+<div class="title">📰 뉴스 News</div>
 <div id="news" class="info">
 업데이트 중...
 </div>
 </div>
 
-
 </div>
 
 
-
 <script>
-
 
 // 시간
 
@@ -140,16 +130,17 @@ weekday:"long"
 
 }
 
-setInterval(updateClock,1000);
 updateClock();
-
+setInterval(updateClock,1000);
 
 
 
 // 날씨
 
+function loadWeather(){
+
 fetch(
-"https://api.open-meteo.com/v1/forecast?latitude=35.1796&longitude=129.0756&current=temperature_2m,relative_humidity_2m"
+"https://api.open-meteo.com/v1/forecast?latitude=35.2180&longitude=129.0860&current=temperature_2m,relative_humidity_2m"
 )
 
 .then(r=>r.json())
@@ -157,7 +148,7 @@ fetch(
 .then(d=>{
 
 document.getElementById("weather").innerHTML=
-"🌡️ 온도 : "+
+"🌡 온도 : "+
 d.current.temperature_2m+
 "℃<br>"+
 "💧 습도 : "+
@@ -173,11 +164,16 @@ document.getElementById("weather").innerHTML=
 
 });
 
+}
 
 
+loadWeather();
+setInterval(loadWeather,300000);
+  
 
+// 지진
 
-// 지진 3개
+function loadEarthquake(){
 
 fetch(
 "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
@@ -187,25 +183,21 @@ fetch(
 
 .then(d=>{
 
-
 let text="";
-
 
 for(let i=0;i<3;i++){
 
 let q=d.features[i];
 
 text+=
-"📍 "+q.properties.place+
+"📍 위치 : "+q.properties.place+
 "<br>"+
-"규모 : "+q.properties.mag+
+"📏 규모 : "+q.properties.mag+
 "<br><br>";
 
 }
 
-
 document.getElementById("quake").innerHTML=text;
-
 
 })
 
@@ -216,12 +208,18 @@ document.getElementById("quake").innerHTML=
 
 });
 
+}
 
+
+loadEarthquake();
+setInterval(loadEarthquake,1800000);
 
 
 
 
 // 환율
+
+function loadMoney(){
 
 fetch(
 "https://open.er-api.com/v6/latest/USD"
@@ -245,12 +243,18 @@ document.getElementById("money").innerHTML=
 
 });
 
+}
+
+
+loadMoney();
+setInterval(loadMoney,3600000);
 
 
 
 
+// 뉴스
 
-// 뉴스 (한국어 제목 3개)
+function loadNews(){
 
 fetch(
 "https://api.rss2json.com/v1/api.json?rss_url=https://www.yna.co.kr/rss/news.xml"
@@ -259,7 +263,6 @@ fetch(
 .then(r=>r.json())
 
 .then(d=>{
-
 
 let text="";
 
@@ -276,7 +279,6 @@ d.items[i].title+
 
 document.getElementById("news").innerHTML=text;
 
-
 })
 
 .catch(()=>{
@@ -286,10 +288,14 @@ document.getElementById("news").innerHTML=
 
 });
 
+}
+
+
+loadNews();
+setInterval(loadNews,1200000);
 
 
 </script>
-
 
 </body>
 </html>
