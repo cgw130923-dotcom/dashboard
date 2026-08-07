@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gunwoo Dashboard</title>
+<title>Gunwoo Dashboard V4</title>
 
 <style>
-
 body{
 margin:0;
-background:#0f172a;
+background:#08111f;
 color:white;
 font-family:Arial,sans-serif;
 }
@@ -23,153 +21,111 @@ font-weight:bold;
 padding:25px;
 }
 
-
 .container{
 padding:15px;
 display:grid;
 gap:15px;
 }
 
-
 .card{
-background:#1e293b;
+background:#172554;
 border-radius:25px;
-padding:25px;
+padding:20px;
 text-align:center;
-box-shadow:0 5px 20px #0005;
 }
 
-
 .title{
-font-size:20px;
+font-size:22px;
 margin-bottom:15px;
 }
 
-
 .big{
-font-size:50px;
+font-size:55px;
 font-weight:bold;
 }
 
-
 .info{
-font-size:22px;
+font-size:20px;
 line-height:1.8;
 }
 
-
-.small{
-color:#cbd5e1;
-}
-
 </style>
-
 </head>
 
-
 <body>
-
 
 <header>
 🌍 Gunwoo Dashboard
 </header>
 
-
-
 <div class="container">
 
-
 <div class="card">
-
-<div class="title">
-🕒 현재 시간
+<div class="title">🕒 현재 시간</div>
+<div id="clock" class="big"></div>
 </div>
-
-<div id="clock" class="big">
-</div>
-
-</div>
-
 
 
 <div class="card">
-
-<div class="title">
-📅 날짜
+<div class="title">📅 날짜</div>
+<div id="date" class="info"></div>
 </div>
-
-<div id="date" class="info">
-</div>
-
-</div>
-
 
 
 <div class="card">
-
-<div class="title">
-🌤 부산 날씨
-</div>
-
+<div class="title">🌤 부산 날씨</div>
 <div id="weather" class="info">
-
-날씨 불러오는 중...
-
+불러오는 중...
 </div>
-
 </div>
-
 
 
 <div class="card">
-
-<div class="title">
-📰 세계 뉴스
+<div class="title">🌋 최근 지진</div>
+<div id="quake" class="info">
+불러오는 중...
 </div>
-
-<div class="info">
-
-뉴스 기능 준비 중
-
 </div>
-
-</div>
-
 
 
 <div class="card">
-
-<div class="title">
-🌎 지구 정보
+<div class="title">💱 환율</div>
+<div id="money" class="info">
+불러오는 중...
+</div>
 </div>
 
+
+<div class="card">
+<div class="title">📰 세계 뉴스</div>
 <div class="info">
-
-지진 · 태풍 · 우주 정보 준비 중
-
+뉴스 연결 준비 중
 </div>
-
 </div>
 
 
+<div class="card">
+<div class="title">⚾ 롯데 자이언츠</div>
+<div class="info">
+경기 정보 준비 중
+</div>
 </div>
 
-
+</div>
 
 
 <script>
 
-
 // 시간
 
-function clock(){
+function time(){
 
 let now=new Date();
 
-document.getElementById("clock").innerHTML=
+clock.innerHTML=
 now.toLocaleTimeString("ko-KR");
 
-document.getElementById("date").innerHTML=
+date.innerHTML=
 now.toLocaleDateString("ko-KR",
 {
 year:"numeric",
@@ -180,78 +136,68 @@ weekday:"long"
 
 }
 
-
-setInterval(clock,1000);
-
-clock();
-
+setInterval(time,1000);
+time();
 
 
 
 
 // 부산 날씨
 
-function weather(){
-
 fetch(
 "https://api.open-meteo.com/v1/forecast?latitude=35.1796&longitude=129.0756&current=temperature_2m,relative_humidity_2m,weather_code"
 )
 
-.then(response=>response.json())
+.then(r=>r.json())
 
-.then(data=>{
+.then(d=>{
 
-
-let temp=data.current.temperature_2m;
-
-let hum=data.current.relative_humidity_2m;
-
-let code=data.current.weather_code;
-
-
-let text="☀️ 맑음";
-
-
-if(code>=1 && code<=3)
-text="🌤 구름 조금";
-
-if(code>=45 && code<=48)
-text="🌫 안개";
-
-if(code>=51 && code<=67)
-text="🌧 비";
-
-if(code>=71 && code<=77)
-text="❄️ 눈";
-
-
-
-document.getElementById("weather").innerHTML=
-
-"🌡️ "+temp+"℃<br>"+
-text+
-"<br>💧 습도 "+hum+"%";
-
-
-})
-
-.catch(()=>{
-
-document.getElementById("weather").innerHTML=
-"날씨 연결 실패";
+weather.innerHTML=
+"🌡️ "+d.current.temperature_2m+"℃<br>"+
+"💧 습도 "+d.current.relative_humidity_2m+"%";
 
 });
 
 
-}
 
 
-weather();
+// 지진
+
+fetch(
+"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+)
+
+.then(r=>r.json())
+
+.then(d=>{
+
+let q=d.features[0];
+
+quake.innerHTML=
+"📍 "+q.properties.place+
+"<br>규모 "+q.properties.mag;
+
+});
 
 
-// 30분마다 갱신
 
-setInterval(weather,1800000);
+
+// 환율
+
+fetch(
+"https://open.er-api.com/v6/latest/USD"
+)
+
+.then(r=>r.json())
+
+.then(d=>{
+
+money.innerHTML=
+"🇺🇸 1달러 ≈ "+
+d.rates.KRW+
+"원";
+
+});
 
 
 </script>
@@ -259,4 +205,3 @@ setInterval(weather,1800000);
 
 </body>
 </html>
-
