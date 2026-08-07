@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Gunwoo Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    background: #111827;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.container {
+    display: grid;
+    gap: 15px;
+    padding: 15px;
+}
+
+.card {
+    background: #1f2937;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px #0005;
+}
+
+.title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.big {
+    font-size: 45px;
+    font-weight: bold;
+}
+
+.text {
+    font-size: 18px;
+}
+
+
+</style>
+</head>
+
+
+<body>
+
+<header>
+🌍 Gunwoo Dashboard
+</header>
+
+
+<div class="container">
+
+<div class="card">
+<div class="title">🕒 현재 시간</div>
+<div id="clock" class="big"></div>
+</div>
+
+
+<div class="card">
+<div class="title">📅 오늘 날짜</div>
+<div id="date" class="text"></div>
+</div>
+
+
+<div class="card">
+<div class="title">🌤️ 부산 날씨</div>
+<div class="text">
+준비 중...
+<br>
+(날씨 기능 추가 예정)
+</div>
+</div>
+
+
+<div class="card">
+<div class="title">📰 세계 뉴스</div>
+<div class="text">
+세계 주요 뉴스
+<br>
+(뉴스 기능 추가 예정)
+</div>
+</div>
+
+
+<div class="card">
+<div class="title">🌋 지구 정보</div>
+<div class="text">
+지진 · 태풍 · 우주 정보
+<br>
+(업데이트 예정)
+</div>
+</div>
+
+
+</div>
+
+
+<script>
+
+function update(){
+
+let now = new Date();
+
+document.getElementById("clock").innerHTML =
+now.toLocaleTimeString("ko-KR");
+
+document.getElementById("date").innerHTML =
+now.toLocaleDateString("ko-KR",
+{
+year:"numeric",
+month:"long",
+day:"numeric",
+weekday:"long"
+});
+
+}
+
+setInterval(update,1000);
+update();
+
+</script>
+
+
+</body>
+</html>
